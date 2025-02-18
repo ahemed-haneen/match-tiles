@@ -1,33 +1,41 @@
+import { getMarvelImage } from "../utils/imageImporter";
+import "./tile.css";
+
 interface TileProps {
   index: number;
   content: string;
   title: string;
   isMatched: boolean;
   handleTileClick: (title: string, index: number) => void;
-  revealed: boolean
+  revealed: boolean;
 }
 
-const Tile = ({ content, title, isMatched, index, handleTileClick, revealed }: TileProps) => {
+const Tile = ({
+  content,
+  title,
+  isMatched,
+  index,
+  handleTileClick,
+  revealed,
+}: TileProps) => {
   const selectTile = () => {
-    console.log('selectedTile : ', title, isMatched, revealed)
-    if(isMatched)
-      return 
+    if (isMatched) return;
 
-    handleTileClick(title, index)
+    handleTileClick(title, index, true);
   };
 
+  const Marvel = getMarvelImage();
 
   return (
-    <div className={"flip-card" + (revealed ? " flip-card-selected" : "")}>
-      <div className="flip-card-inner" onClick={selectTile}>
-        <div className="flip-card-front">
+    <div className={"grid-item flip-card" + (revealed ? " flip-card-selected" : "")}>
+      <div className="grid-item__inner flip-card-inner" onClick={selectTile}>
+        <div className="grid-item__card flip-card-front">
           <img
-            src="https://freesvg.org/img/1594640381alien-head-silhouette-freesvg.org.png"
+            src={Marvel}
             alt="Avatar"
-            style={{ width: "100%", height: "100%" }}
           />
         </div>
-        <div className="flip-card-back">
+        <div className="grid-item__card flip-card-back"> 
           <img className="tile-image" src={content} alt={title} />
         </div>
       </div>

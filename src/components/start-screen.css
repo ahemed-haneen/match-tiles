@@ -1,0 +1,71 @@
+.start-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #09122C; /* Dark Blue-Gray background */
+    text-align: center;
+  }
+  
+  .start-screen-header {
+    margin-bottom: 20px;
+  }
+  
+  .start-screen-header h1 {
+    font-size: 2.5em;
+    color: #E17564; /* Coral-Red */
+  }
+  
+  .start-screen-content {
+    margin-bottom: 30px;
+  }
+
+  .start-screen-content input{
+    border: 1px solid #f0f0f0;
+    margin-top: 10px;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    font-size: 2em;
+    color: #f0f0f0;
+    background-color: #09122C;
+  }
+
+  .start-screen-content label {
+    font-size: 1.2em;
+    color: #f0f0f0; /*Light Gray Text*/
+    margin-bottom: 10px;
+  }
+
+  .start-screen-content p {
+    font-size: 1.2em;
+    color: #f0f0f0; /*Light Gray Text*/
+    margin-bottom: 20px;
+  }
+  
+  .start-button {
+    background-color: #BE3144; /* Vibrant Red */
+    color: white; /* White text */
+    padding: 15px 30px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .start-button:disabled {
+    background-color: #996666;
+    cursor: not-allowed;
+  }
+  
+  .start-button:hover {
+    background-color: #872341; /* Deep Muted Red on hover */
+  }
+  
+  .start-screen-footer {
+    margin-top: 20px;
+    font-size: 0.9em;
+    color: #888; /* Lighter Gray text */
+  }

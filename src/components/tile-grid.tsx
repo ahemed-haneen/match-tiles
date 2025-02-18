@@ -3,7 +3,11 @@ import Tile from "./tile";
 import Randomizer from "../utils/randomizer";
 import ImageCollection, { getImage } from "../utils/imageImporter";
 
-interface TileGridProps {}
+import "./tile-grid.css";
+
+interface TileGridProps {
+  playerName: string
+}
 
 interface Tile {
   image: string;
@@ -12,17 +16,37 @@ interface Tile {
   revealed: boolean;
 }
 
-const TileGrid: React.FC<TileGridProps> = () => {
+const TileGrid: React.FC<TileGridProps> = ({ playerName }) => {
   const [selectedTileOne, setSelectedTileOne] = useState<string | null>(null);
   const [selectedTileTwo, setSelectedTileTwo] = useState<string | null>(null);
   const [selectedTiles, setSelectedTiles] = useState<number[]>([]);
-  const [animationLoading, setAnimationLoading] = useState<null | number> (null);
-
+  const [animationLoading, setAnimationLoading] = useState<null | number>(null);
+  const [gameInterval, setGameInterval] = useState<number | null>(null)
   const cardItems = ImageCollection;
+
+  const [time, setTime] = useState(0);
+  const [gameEnded, setGameEnded] = useState(false);
   const [tiles, setTiles] = useState<Tile[]>([]);
 
-  const gridSize = 4;
-  const totalTiles = gridSize * gridSize;
+  const [gameStarted, setGameStarted] = useState(false);
+  const gridWidth = 5;
+  const gridHeight = 4;
+
+  const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes.toString().padStart(2, "0")}:${remainingSeconds
+      .toString()
+      .padStart(2, "0")}`;
+  };
+
+  const startTimer = () => {
+    let interval = setInterval(() => setTime((time) => time + 1), 1000);
+    setGameInterval(interval)
+    return () => clearInterval(interval);
+  };
+
+  const totalTiles = gridWidth * gridHeight;
 
   useEffect(() => {
     const randomizer = new Randomizer({ itemList: cardItems });
@@ -40,18 +64,63 @@ const TileGrid: React.FC<TileGridProps> = () => {
     );
   }, []);
 
-  const handleTileClick = (title: string, index: number) => {
+  useEffect(() => {
+    const allMatched = tiles.length ? tiles.every((tile) => tile.isMatched) : false;
+    if (allMatched) {
+      setGameEnded(true);
+    }
+  }, [tiles]);
+
+  useEffect(() => {
+    if (gameStarted && !gameEnded) {
+      return startTimer()
+    }  else if (gameInterval) {
+      debugger;
+      clearInterval(gameInterval)
+    }
+  }, [gameEnded, gameStarted, time]);
+
+  const handleTileClick = (title: string, index: number, test=false) => {
+    if (time == 0) {
+      setTime(0);
+      setGameStarted(true);
+    }
+
     if (animationLoading) clearTimeout(animationLoading);
 
     if (!selectedTileOne) {
       setSelectedTileOne(title);
       setSelectedTiles([index]);
+      console.log('selectedTiles : ', selectedTiles)
     } else {
-      setSelectedTileTwo(title);
-      setSelectedTiles((prevValue) => {
-        prevValue.push(index);
-        return prevValue;
-      });
+
+      // if (index === selectedTiles[0]){
+      //   debugger;
+      //   setTiles((prevTiles) => {
+      //     prevTiles[index].revealed = false;
+      //     return [...prevTiles]
+      //   })
+      //   console.log('tiles : ', tiles)
+      //   setTimeout(() => {
+      //     debugger
+      //     setAnimationLoading(null);
+      //     setTiles((prevValue) => {
+      //       prevValue.forEach((item, index) => {
+      //         item.revealed = prevValue[index].isMatched;
+      //       });
+  
+      //       return prevValue;
+      //     });
+  
+      //     setSelectedTileOne(null);
+      //     setSelectedTileTwo(null);
+      //   }, 100);
+      // } else {
+        setSelectedTileTwo(title);
+        setSelectedTiles((prevValue) => {
+          return [...prevValue, index];
+        });
+      // }
     }
     setTiles((prevTiles) => {
       prevTiles[index].revealed = true;
@@ -60,7 +129,7 @@ const TileGrid: React.FC<TileGridProps> = () => {
   };
 
   useEffect(() => {
-    if (selectedTileOne === selectedTileTwo) {
+    if (selectedTileOne === selectedTileTwo && selectedTiles[0] != selectedTiles[1]) {
       setTiles((prevValue) => {
         prevValue.forEach((item, index) => {
           if (index == selectedTiles[0] || index == selectedTiles[1]) {
@@ -76,41 +145,44 @@ const TileGrid: React.FC<TileGridProps> = () => {
       setSelectedTileOne(null);
       setSelectedTileTwo(null);
     } else {
-      if (animationLoading)
-        clearTimeout(animationLoading)
-      setAnimationLoading(
-        setTimeout(() => {
-          setTiles((prevValue) => {
-            prevValue.forEach((item, index) => {
-              item.revealed = prevValue[index].isMatched;
-            });
 
-            return prevValue;
+      let timeout = setTimeout(() => {
+        setAnimationLoading(null);
+        setTiles((prevValue) => {
+          prevValue.forEach((item, index) => {
+            item.revealed = prevValue[index].isMatched;
           });
 
-          setSelectedTileOne(null);
-          setSelectedTileTwo(null);
-        }, 1000)
-      );
+          return prevValue;
+        });
 
+        setSelectedTileOne(null);
+        setSelectedTileTwo(null);
+      }, selectedTiles[0] != selectedTiles[1] ? 1000 : 0);
+
+      setAnimationLoading(timeout);
     }
 
     setSelectedTiles([]);
   }, [selectedTileTwo]);
 
   return (
-    <div className="tile-grid game-board__background game-board">
-      {tiles.map((tile, index) => (
-        <Tile
-          key={index}
-          index={index}
-          content={tile.image}
-          title={tile.title}
-          isMatched={tile.isMatched}
-          revealed={tile.revealed}
-          handleTileClick={handleTileClick}
-        />
-      ))}
+    <div className="game">
+      <h1 className="introductory-message">Welcome {playerName}</h1>
+      <div className="grid-container tile-grid game-board__background game-board">
+        {tiles.map((tile, index) => (
+          <Tile
+            key={index}
+            index={index}
+            content={tile.image}
+            title={tile.title}
+            isMatched={tile.isMatched}
+            revealed={tile.revealed}
+            handleTileClick={handleTileClick}
+          />
+        ))}
+      </div>
+      <div className="game-timer">{formatTime(time)}</div>
     </div>
   );
 };
