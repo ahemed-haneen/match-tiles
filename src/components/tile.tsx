@@ -21,7 +21,7 @@ const Tile = ({
   const selectTile = () => {
     if (isMatched) return;
 
-    handleTileClick(title, index, true);
+    handleTileClick(title, index);
   };
 
   const Marvel = getMarvelImage();
