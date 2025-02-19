@@ -87,3 +87,38 @@
       transform: translateY(100vh) rotate(360deg);
     }
   }
+
+  @media(max-width: 4000px){
+    .game-board {
+      height: 63vh;
+      width: 71vh;
+    }
+  }
+
+  @media(max-width: 2560px){
+    .game-board {
+      height: 70vh;
+      width: 80vh;
+    }
+  }
+
+  @media(max-width: 1440px){
+    .game-board{
+      height:40vh;
+      width: 40vw;
+    }
+  }
+
+  @media(max-width: 1024px){
+    .game-board{
+      height:30vh;
+      width: 60vw;
+    }
+  }
+
+  @media(max-width: 768px){
+    .game-board{
+      height:30vh;
+      width: 70vw;
+    }
+  }
