@@ -23,6 +23,7 @@ const TileGrid: React.FC<TileGridProps> = ({ playerName }) => {
   const [animationLoading, setAnimationLoading] = useState<null | number>(null);
   const [gameInterval, setGameInterval] = useState<number | null>(null);
   const cardItems = ImageCollection;
+  // const [pendingClick, setPendingClick] = useState<{clickIndex: null | number, clickTitle: string | null}>({clickIndex: null, clickTitle: null })
 
   const [time, setTime] = useState(0);
   const [gameEnded, setGameEnded] = useState(false);
@@ -53,6 +54,7 @@ const TileGrid: React.FC<TileGridProps> = ({ playerName }) => {
 
     setSelectedTileOne(null);
     setSelectedTileTwo(null);
+    setSelectedTiles([])
   };
 
   const startTimer = () => {
@@ -135,6 +137,15 @@ const TileGrid: React.FC<TileGridProps> = ({ playerName }) => {
     }
   }, [tiles]);
 
+  // useEffect(() => {
+  //   if (pendingClick.clickTitle!= null && pendingClick.clickIndex != null){
+  //     debugger;
+  //     handleTileClick(pendingClick.clickTitle, pendingClick.clickIndex)
+  //   }
+  //   setPendingClick({clickIndex: null, clickTitle: null})
+
+  // },[pendingClick])
+
   useEffect(() => {
     if (gameStarted && !gameEnded) {
       return startTimer();
@@ -152,6 +163,8 @@ const TileGrid: React.FC<TileGridProps> = ({ playerName }) => {
     if (animationLoading) {
       clearTimeout(animationLoading);
       triggerCloseAnimation();
+      // setPendingClick({clickIndex: index, clickTitle: title})
+      return;
     }
 
     if (!selectedTileOne) {
