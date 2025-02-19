@@ -7,7 +7,10 @@ app.use(cors());
 app.use(express.json());
 
 const results = [];
-const winner = {};
+const winner = {
+  player: "",
+  timestamp: ""
+}
 
 app.post("/api/results", (req, res) => {
   const receivedData = req.body;
@@ -20,7 +23,7 @@ app.post("/api/results", (req, res) => {
     winner.player = receivedData.player;
     winner.timestamp = receivedData.timestamp;
   }
-  res.send("Data received!", winner);
+  res.status(200).send(winner);
 
   console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
   console.log(
@@ -31,7 +34,7 @@ app.post("/api/results", (req, res) => {
 
 app.get("/api/results", (req, res) => {
   console.log("results total : ", results);
-  res.send("Data received!", results);
+  res.status(200).send(results);
 });
 
 app.listen(port, () => {
