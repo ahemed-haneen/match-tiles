@@ -68,7 +68,7 @@ const TileGrid: React.FC<TileGridProps> = ({ playerName }) => {
       timestamp: time,
     };
 
-    fetch("http://192.168.18.49:5173/api/results", {
+    fetch("http://192.168.18.49:5172/api/results", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
